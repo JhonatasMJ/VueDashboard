@@ -15,11 +15,11 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 const usuarios = ref([]);
 
-// Carregar os usuários ao montar o componente
+
 onMounted(async () => {
   try {
     const allUsers = await getUsers();
-    usuarios.value = allUsers ? Object.values(allUsers) : []; // Converte o objeto em array
+    usuarios.value = allUsers ? Object.values(allUsers) : []; 
   } catch (err) {
     console.error("Erro ao carregar usuários:", err);
   }
@@ -58,9 +58,9 @@ const paginatedUsuarios = computed(() => {
         <Table class="w-full text-sm overflow-visible rounded-lg mt-4">
           <TableHeader>
             <TableRow>
-              <TableHead class="w-1/4">Nome</TableHead>
-              <TableHead class="text-center w-1/4">Email</TableHead>
-              <TableHead class="text-left w-1/4">Data de Criação</TableHead>
+              <TableHead class=" w-1/2">Nome</TableHead>
+              <TableHead class="text-left w-1/2">Email</TableHead>
+              <TableHead class="text-left w-1/2">Data de Criação</TableHead>
 
             </TableRow>
           </TableHeader>
@@ -71,16 +71,16 @@ const paginatedUsuarios = computed(() => {
                 :key="usuario.id"
                 class="border-b border-gray-200 hover:bg-gray-100"
               >
-                <TableCell class="text-left text-gray-900">
+                <TableCell class="text-left text-gray-900 capitalize">
                   {{ usuario.nome }}
                 </TableCell>
-                <TableCell class="text-center text-gray-600">
+                <TableCell class="text-left text-gray-600">
                   {{ usuario.email }}
                 </TableCell>
                 <TableCell class="text-left text-gray-500">
                   {{ usuario.createdAt }} 
                 </TableCell>
-                <TableCell class="text-center font-semibold text-marca">
+                <TableCell class="text-left font-semibold text-marca">
                   {{ usuario.saldo }}
                 </TableCell>
                 <TableCell class="text-left font-semibold text-marca">
