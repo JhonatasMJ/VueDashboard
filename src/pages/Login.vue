@@ -81,7 +81,7 @@ async function handleSubmit() {
         </div>
         <CardHeader className="px-0">
           <CardTitle className="text-4xl text-(--marca) font-bold">
-            Olá novamentee
+            Olá novamenteee
           </CardTitle>
           <CardDescription className="text-zinc-900 text-md mt-4">
             Faça login para começar a usar seu Dashboard.
