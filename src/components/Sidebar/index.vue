@@ -64,11 +64,17 @@ const { user } = useUser();
             </TooltipTrigger>
             <TooltipContent side="right">Painel</TooltipContent>
           </Tooltip>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button>Sair</Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Sair</TooltipContent>
+          </Tooltip>
         </TooltipProvider>
       </nav>
 
       <nav class="mt-auto flex flex-col items-center gap-2 px-2 py-5">
-        <p>{{ user.displayName }}</p>
+        <p class="capitalize">{{ user.displayName }}</p>
         <p class="text-xs text-muted-foreground">{{ user.email }}</p>
 
       </nav>
