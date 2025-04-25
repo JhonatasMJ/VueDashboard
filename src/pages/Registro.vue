@@ -82,7 +82,7 @@ async function handleSubmit() {
         </div>
         <CardHeader className="px-0">
           <CardTitle className="text-4xl text-(--marca) font-bold">
-            Crie sua contaaaaa
+            Crie sua contaaaaaa
           </CardTitle>
           <CardDescription className="text-zinc-900 text-md mt-4">
             Crie sua conta para começar a usar seu Dashboard.
