@@ -66,7 +66,7 @@ const { user } = useUser();
           </Tooltip>
           <Tooltip>
             <TooltipTrigger as-child>
-              <Button>Sair</Button>
+              <Button>Sairr</Button>
             </TooltipTrigger>
             <TooltipContent side="right">Sair</TooltipContent>
           </Tooltip>
