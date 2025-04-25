@@ -5,7 +5,7 @@ import Sidebar from "@/components/Sidebar/index.vue";
   <Sidebar/>
   <main className="sm:ml-64 p-4 ">
     <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <h1>Testee</h1>
+      <h1>Teste2e</h1>
     </section>
   </main>
 </template>
