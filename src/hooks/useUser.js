@@ -7,7 +7,7 @@ import {
   updateProfile,
   onAuthStateChanged,
 } from "firebase/auth";
-import { ref as dbRef, set, update, get } from "firebase/database"; // Adicionei 'get' aqui
+import { ref as dbRef, set, update, get } from "firebase/database"; 
 
 const currentUser = ref(null);
 
