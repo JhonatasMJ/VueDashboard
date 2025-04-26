@@ -11,7 +11,7 @@ import {
 import { ListChecks, MonitorCog, Store, Menu, LayoutDashboard, Users} from "lucide-vue-next";
 import NavItem from "@/components/NavItem/index.vue";
 import useUser from "@/hooks/useUser";
-const { user } = useUser();
+const { user, logout } = useUser();
 </script>
 
 <template>
@@ -64,20 +64,25 @@ const { user } = useUser();
             </TooltipTrigger>
             <TooltipContent side="right">Painel</TooltipContent>
           </Tooltip>
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <Button>Sairr</Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">Sair</TooltipContent>
-          </Tooltip>
+     
         </TooltipProvider>
+        <Button 
+        class="w-full bg-red-600 hover:bg-red-700 cursor-pointer"
+        @click="logout"
+        >
+        Sair
+      </Button>
       </nav>
 
       <nav class="mt-auto flex flex-col items-center gap-2 px-2 py-5">
-        <p class="capitalize">{{ user.displayName }}</p>
-        <p class="text-xs text-muted-foreground">{{ user.email }}</p>
-
-      </nav>
+  <template v-if="user">
+    <p class="capitalize">{{ user.displayName }}</p>
+    <p class="text-xs text-muted-foreground">{{ user.email }}</p>
+  </template>
+  <template v-else>
+    <p class="text-muted-foreground text-xs">Carregando usuário...</p>
+  </template>
+</nav>
     </aside>
 
 

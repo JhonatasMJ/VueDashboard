@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+
 import PaginationComponent from '@/components/Pagination/index.vue'; // Atualize o caminho conforme necessário
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -9,7 +10,9 @@ import { dataHoraFormatada } from "@/functions/dataAgora";
 import SearchInput from "@/components/Busca/index.vue";
 import useUser from "@/hooks/useUser";
 
-const { getUsers } = useUser();
+// Função que já tem no seu projeto
+const { user, getUsers } = useUser();
+
 const searchQuery = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 10;
@@ -18,19 +21,21 @@ const usuarios = ref([]);
 
 onMounted(async () => {
   try {
-    const allUsers = await getUsers();
+    const allUsers = await getUsers(); 
     usuarios.value = allUsers ? Object.values(allUsers) : []; 
   } catch (err) {
     console.error("Erro ao carregar usuários:", err);
   }
 });
 
+// Computed para filtrar os usuários
 const filteredUsuarios = computed(() => {
   return usuarios.value.filter((usuario) =>
     usuario.nome.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
+// Computed para paginação
 const paginatedUsuarios = computed(() => {
   const startIndex = (currentPage.value - 1) * itemsPerPage;
   return filteredUsuarios.value.slice(startIndex, startIndex + itemsPerPage);
@@ -61,30 +66,23 @@ const paginatedUsuarios = computed(() => {
               <TableHead class=" w-1/2">Nome</TableHead>
               <TableHead class="text-left w-1/2">Email</TableHead>
               <TableHead class="text-left w-1/2">Data de Criação</TableHead>
-
             </TableRow>
           </TableHeader>
           <TableBody>
             <template v-if="paginatedUsuarios.length > 0">
               <TableRow
-                v-for="usuario in paginatedUsuarios"
-                :key="usuario.id"
+                v-for="user in paginatedUsuarios"
+                :key="user.id"
                 class="border-b border-gray-200 hover:bg-gray-100"
               >
                 <TableCell class="text-left text-gray-900 capitalize">
-                  {{ usuario.nome }}
+                  {{ user.nome }}
                 </TableCell>
                 <TableCell class="text-left text-gray-600">
-                  {{ usuario.email }}
+                  {{ user.email }}
                 </TableCell>
                 <TableCell class="text-left text-gray-500">
-                  {{ usuario.createdAt }} 
-                </TableCell>
-                <TableCell class="text-left font-semibold text-marca">
-                  {{ usuario.saldo }}
-                </TableCell>
-                <TableCell class="text-left font-semibold text-marca">
-                  {{ usuario.formaPagamento }}
+                  {{ user.createdAt }} 
                 </TableCell>
               </TableRow>
             </template>

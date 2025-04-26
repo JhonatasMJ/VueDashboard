@@ -54,13 +54,18 @@ async function handleSubmit() {
   }
 
   try {
-    await login(form.email, form.password);
+    const email = form.email.trim().toLowerCase(); // <- Limpa o email
+    const password = form.password;
+
+    await login(email, password);
     router.push({ path: "/Dashboard" });
   } catch (error) {
     if (error.code === "auth/user-not-found") {
       toast.error("Usuário não encontrado.");
     } else if (error.code === "auth/wrong-password") {
       toast.error("Senha incorreta.");
+    } else if (error.code === "auth/invalid-email") {
+      toast.error("Email inválido.");
     } else {
       toast.error("Erro ao tentar fazer login.");
     }

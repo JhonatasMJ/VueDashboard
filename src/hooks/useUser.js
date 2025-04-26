@@ -7,19 +7,19 @@ import {
   updateProfile,
   onAuthStateChanged,
 } from "firebase/auth";
-import { ref as dbRef, set, update, get } from "firebase/database"; 
+import { ref as dbRef, set, update, get } from "firebase/database";
+import router from "@/router";
 
 const currentUser = ref(null);
-
 
 onAuthStateChanged(auth, (user) => {
   currentUser.value = user;
 });
 
-
 const login = async (email, password) => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const cleanedEmail = email.trim().toLowerCase();
+    const userCredential = await signInWithEmailAndPassword(auth, cleanedEmail, password);
     const user = userCredential.user;
     currentUser.value = user;
 
@@ -33,10 +33,9 @@ const login = async (email, password) => {
   }
 };
 
-
 const register = async (email, password, nome) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email.trim().toLowerCase(), password);
     const user = userCredential.user;
 
     await updateProfile(user, {
@@ -57,12 +56,11 @@ const register = async (email, password, nome) => {
   }
 };
 
-
 const logout = async () => {
   await signOut(auth);
   currentUser.value = null;
+  router.push("/");
 };
-
 
 const getUsers = async () => {
   try {
@@ -70,7 +68,7 @@ const getUsers = async () => {
     const snapshot = await get(usersRef);
 
     if (snapshot.exists()) {
-      return snapshot.val(); 
+      return snapshot.val();
     } else {
       console.log("Nenhum usuário encontrado.");
       return null;
@@ -81,14 +79,13 @@ const getUsers = async () => {
   }
 };
 
-
 const useUser = () => {
   return {
     user: currentUser,
     login,
     register,
     logout,
-    getUsers, 
+    getUsers,
   };
 };
 
