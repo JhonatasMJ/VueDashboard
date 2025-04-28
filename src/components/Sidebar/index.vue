@@ -1,4 +1,4 @@
-<script setup >
+<script setup>
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
@@ -8,9 +8,20 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import { ListChecks, MonitorCog, Store, Menu, LayoutDashboard, Users} from "lucide-vue-next";
+import {
+  ListChecks,
+  MonitorCog,
+  Store,
+  Menu,
+  LayoutDashboard,
+  Users,
+  Bot,
+  Package
+} from "lucide-vue-next";
 import NavItem from "@/components/NavItem/index.vue";
 import useUser from "@/hooks/useUser";
+import ConfirmDialog from "@/components/DialogConfirm/index.vue";
+
 const { user, logout } = useUser();
 </script>
 
@@ -21,8 +32,11 @@ const { user, logout } = useUser();
     >
       <nav class="flex flex-col items-start gap-8 px-6 py-5">
         <TooltipProvider>
-          <RouterLink to="/Dashboard" class="w-full mt-4 text-center font-bold text-2xl">
-             <img src="../../assets/logo.webp" alt="Logo">
+          <RouterLink
+            to="/Dashboard"
+            class="w-full mt-4 text-center font-bold text-2xl"
+          >
+            <img src="../../assets/logo.webp" alt="Logo" />
           </RouterLink>
           <Separator class="w-full my-2" />
 
@@ -45,13 +59,13 @@ const { user, logout } = useUser();
           <Tooltip>
             <TooltipTrigger as-child>
               <RouterLink
-                to="/Painel"
+                to="/Produtos"
                 class="flex gap-2 items-center rounded-lg text-muted-foreground transition-colors hover:text-pink-600 w-full"
               >
-                <NavItem href="/Painel" :icon="MonitorCog" label="Painel" />
+                <NavItem href="/Produtos" :icon="Package" label="Produtos" />
               </RouterLink>
             </TooltipTrigger>
-            <TooltipContent side="right">Painel</TooltipContent>
+            <TooltipContent side="right">Produtos</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger as-child>
@@ -64,28 +78,43 @@ const { user, logout } = useUser();
             </TooltipTrigger>
             <TooltipContent side="right">Painel</TooltipContent>
           </Tooltip>
-     
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <RouterLink
+                to="/Chat"
+                class="flex gap-2 items-center rounded-lg text-muted-foreground transition-colors hover:text-pink-600 w-full"
+              >
+                <NavItem href="/Chat" :icon="Bot" label="Chat" />
+              </RouterLink>
+            </TooltipTrigger>
+            <TooltipContent side="right">Chat</TooltipContent>
+          </Tooltip>
         </TooltipProvider>
-        <Button 
-        class="w-full bg-red-600 hover:bg-red-700 cursor-pointer"
-        @click="logout"
-        >
-        Sair
-      </Button>
       </nav>
 
       <nav class="mt-auto flex flex-col items-center gap-2 px-2 py-5">
-  <template v-if="user">
-    <p class="capitalize">{{ user.displayName }}</p>
-    <p class="text-xs text-muted-foreground">{{ user.email }}</p>
-  </template>
-  <template v-else>
-    <p class="text-muted-foreground text-xs">Carregando usuário...</p>
-  </template>
-</nav>
+        <template v-if="user">
+          <div>
+            <p class="capitalize font-bold text-center text-(--marca)">{{ user.displayName }}</p>
+            <p class="text-xs text-muted-foreground">{{ user.email }}</p>
+
+          </div>
+          <Separator />
+          <ConfirmDialog
+            title="Sair da conta"
+            description="Tem certeza que deseja sair da sua conta?"
+            :onConfirm="logout"
+          >
+            <template #trigger>
+              <Button class="w-full" variant="destructive">Sair</Button>
+            </template>
+          </ConfirmDialog>
+        </template>
+        <template v-else>
+          <p class="text-muted-foreground text-xs">Carregando usuário...</p>
+        </template>
+      </nav>
     </aside>
-
-
     <div class="sm:hidden flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
       <header
         class="sticky top-0 z-30 flex h-14 items-center px-4 border-b bg-background gap-4 sm:static sm:h-auto sm:border-b-0 sm:bg-transparent sm:px-6"
@@ -107,22 +136,22 @@ const { user, logout } = useUser();
                 <Separator class="w-full my-2" />
 
                 <RouterLink
-                to="/"
-                class="flex gap-2 items-center rounded-lg text-muted-foreground transition-colors hover:text-pink-600 w-full"
-              >
-                <NavItem
-                  href="/Dashboard"
-                  :icon="LayoutDashboard"
-                  label="Dashboard"
-                />
-              </RouterLink>
+                  to="/"
+                  class="flex gap-2 items-center rounded-lg text-muted-foreground transition-colors hover:text-pink-600 w-full"
+                >
+                  <NavItem
+                    href="/Dashboard"
+                    :icon="LayoutDashboard"
+                    label="Dashboard"
+                  />
+                </RouterLink>
 
-              <RouterLink
-                to="/Painel"
-                class="flex gap-2 items-center rounded-lg text-muted-foreground transition-colors hover:text-pink-600 w-full"
-              >
-                <NavItem href="/Painel" :icon="MonitorCog" label="Painel" />
-              </RouterLink>
+                <RouterLink
+                  to="/Painel"
+                  class="flex gap-2 items-center rounded-lg text-muted-foreground transition-colors hover:text-pink-600 w-full"
+                >
+                  <NavItem href="/Painel" :icon="MonitorCog" label="Painel" />
+                </RouterLink>
               </div>
 
               <div class="mt-auto border-t p-6">

@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Painel from "@/pages/Painel.vue";
+import Produtos from "@/pages/Produtos.vue";
 import Dashboard from "@/pages/Dashboard.vue";
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 import Login from "@/pages/Login.vue";
 import Usuarios from "@/pages/Usuarios.vue";
 import Registro from "@/pages/Registro.vue";
+import Chat from "@/pages/Chat.vue";
 
 const routes = [
   {
@@ -12,10 +13,11 @@ const routes = [
     component: DefaultLayout,
     children: [
       {path: "", component: Login,    meta: { title: 'Login' }},
-      {path: "Painel", component: Painel,   meta: { title: 'Painel' }},
+      {path: "Produtos", component: Produtos,   meta: { title: 'Produtos' }},
       { path: "Dashboard", component: Dashboard, meta: { title: 'Dashboard' }},
       {path: "Usuarios", component: Usuarios, meta: { title: 'Usuarios'}},
-      {path: "Registro", component: Registro, meta: { title: 'Registro'}}
+      {path: "Registro", component: Registro, meta: { title: 'Registro'}},
+      {path: "Chat", component: Chat, meta: { title: 'Chat'}}
 
 
     ],

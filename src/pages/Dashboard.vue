@@ -15,9 +15,9 @@ const userCount = ref(0);
 
 onMounted(async () => {
   try {
-    const users = await getUsers(); 
+    const users =  getUsers(); 
     if (users) {
-      userCount.value = Array.isArray(users) ? users.length : Object.keys(users).length +1;
+      userCount.value = Array.isArray(users) ? users.length : Object.keys(users).length ;
     }
   } catch (error) {
     console.error("Erro ao obter usuários:", error);

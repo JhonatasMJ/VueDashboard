@@ -5,8 +5,8 @@
       id="search"
       v-model="inputValue"
       type="text"
-      class="mt-1 p-2 w-full border rounded"
-      placeholder="Procure por usuários"
+      class= "py-5 pr-12 focus-visible:ring-(--marca)/30 focus-visible:border-(--marca) mt-2"
+      :placeholder="placeholder"
     />
   </div>
 </template>
@@ -17,6 +17,7 @@ import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 const props = defineProps({
   label: String,
+  placeholder: String,
   modelValue: String
 });
 

@@ -49,7 +49,7 @@ const paginatedUsuarios = computed(() => {
       <CardHeader>
         <div class="flex items-center justify-between">
           <CardTitle class="flex text-lg sm:text-xl text-gray-800">
-            Usuários Recentes<span class="text-marca block">.</span>
+            Usuários Cadastrados<span class="text-marca block">.</span>
           </CardTitle>
           <Users class="w-5 h-5 text-gray-600" />
         </div>
@@ -58,7 +58,7 @@ const paginatedUsuarios = computed(() => {
         </CardDescription>
       </CardHeader>
       <CardContent class="overflow-x-auto">
-        <SearchInput v-model="searchQuery" label="Procurar usuários" />
+        <SearchInput v-model="searchQuery" label="Procurar usuários" placeholder="Digite o nome do usuário" />
 
         <Table class="w-full text-sm overflow-visible rounded-lg mt-4">
           <TableHeader>
