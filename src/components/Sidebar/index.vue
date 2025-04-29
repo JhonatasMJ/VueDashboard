@@ -76,7 +76,7 @@ const { user, logout } = useUser();
                 <NavItem href="/Usuarios" :icon="Users" label="Usuarios" />
               </RouterLink>
             </TooltipTrigger>
-            <TooltipContent side="right">Painel</TooltipContent>
+            <TooltipContent side="right">Usuários</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger as-child>

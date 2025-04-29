@@ -59,16 +59,15 @@ async function handleSubmit() {
     const email = form.email.trim().toLowerCase();
     const password = form.password;
 
-    await userStore.login(email, password);  // <-- Esperando o login ser completado
-
-    // Verifique se o usuário foi autenticado corretamente
+    await userStore.login(email, password);  
+   
     if (userStore.user) {
       router.push({ path: "/Dashboard" });
     } else {
       toast.error("Erro ao autenticar. Tente novamente.");
     }
   } catch (error) {
-    // Tratamento de erro específico
+
     if (error.code === "auth/user-not-found") {
       toast.error("Usuário não encontrado.");
     } else if (error.code === "auth/wrong-password") {

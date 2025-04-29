@@ -4,11 +4,13 @@ import { ref, computed, onMounted } from 'vue';
 import PaginationComponent from '@/components/Pagination/index.vue'; 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
 import Sidebar from "@/components/Sidebar/index.vue";
-import { Users } from "lucide-vue-next";
+import { Users, Trash2, Pencil } from "lucide-vue-next";
 import { dataHoraFormatada } from "@/functions/dataAgora";
 import SearchInput from "@/components/Busca/index.vue";
 import useUser from "@/hooks/useUser";
+import ConfirmDialog from "@/components/DialogConfirm/index.vue";
 
 
 const { user, getUsers } = useUser();
@@ -63,9 +65,10 @@ const paginatedUsuarios = computed(() => {
         <Table class="w-full text-sm overflow-visible rounded-lg mt-4">
           <TableHeader>
             <TableRow>
-              <TableHead class=" w-1/2">Nome</TableHead>
-              <TableHead class="text-left w-1/2">Email</TableHead>
-              <TableHead class="text-left w-1/2">Data de Criação</TableHead>
+              <TableHead class=" w-1/3">Nome</TableHead>
+              <TableHead class="text-left w-1/3">Email</TableHead>
+              <TableHead class="text-left w-1/3">Data de Criação</TableHead>
+              <TableHead class="text-center w-1/3">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -84,6 +87,27 @@ const paginatedUsuarios = computed(() => {
                 <TableCell class="text-left text-gray-500">
                   {{ user.createdAt }} 
                 </TableCell>
+                <TableCell class="text-left text-gray-500">
+                <div class="flex gap-2 justify-center p-4">
+                  <Button size="sm" variant="outline">
+                    <Pencil :size="10" />
+                  </Button>
+                  <ConfirmDialog
+                    title="Excluir usuário"
+                    description="Tem certeza que deseja excluir este usuário?"
+                    :onConfirm="() => excluirProduto(p.codigo)"
+                  >
+                    <template #trigger>
+                      <Button
+                        class="text-xs bg-red-600 hover:bg-red-700 cursor-pointer"
+                        size="sm"
+                      >
+                        <Trash2 :size="10" />
+                      </Button>
+                    </template>
+                  </ConfirmDialog>
+                </div>
+              </TableCell>
               </TableRow>
             </template>
             <template v-else>

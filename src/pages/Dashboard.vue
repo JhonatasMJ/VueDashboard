@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted } from "vue";
-import { useUserStore } from "@/stores/useUserStore";  
-import { Users } from "lucide-vue-next";  
+import { Package, Users } from "lucide-vue-next";  
 import {
   Card,
   CardContent,
@@ -9,8 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Sidebar from "@/components/Sidebar/index.vue";
+import { useUserStore } from "@/stores/useUserStore";  
+import { useProdutosStore } from "@/stores/useProdutoStore";
+import ProdutosRecentes from "@/components/ProdutosRecentes/index.vue";
 
 
+
+const store = useProdutosStore();
 const userStore = useUserStore();
 
 
@@ -26,14 +30,14 @@ onMounted(async () => {
       <Card>
         <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2 px-6">
           <div class="flex flex-col">
-            <CardTitle class="text-sm font-medium">Usuários Cadastrados</CardTitle>
-            <p class="text-xs text-muted-foreground mt-1">Trilhas de aprendizado disponíveis</p>
+            <CardTitle class="text-xl font-medium">Usuários Cadastrados</CardTitle>
+            <p class="text-xs text-muted-foreground mt-1">Quantidade de usuários cadastrados</p>
           </div>
-          <Users class="h-4 w-4 text-marca" />
+          <Users class="h-4 w-4 text-gray-600" />
         </CardHeader>
         <CardContent>
           <div class="text-4xl font-bold mt-1">
-            {{ userStore.userCount }} <!-- Exibe a contagem de usuários -->
+            {{ userStore.userCount }} 
           </div>
         </CardContent>
       </Card>
@@ -41,17 +45,18 @@ onMounted(async () => {
       <Card>
         <CardHeader class="flex flex-row items-center justify-between space-y-0 pb-2 px-6">
           <div class="flex flex-col">
-            <CardTitle class="text-sm font-medium">Usuários Cadastrados</CardTitle>
-            <p class="text-xs text-muted-foreground mt-1">Trilhas de aprendizado disponíveis</p>
+            <CardTitle class="text-xl font-medium">Produtos Cadastrados</CardTitle>
+            <p class="text-xs text-muted-foreground mt-1">Produtos cadastrados no sistema</p>
           </div>
-          <Users class="h-4 w-4 text-marca" />
+          <Package class="h-4 w-4 text-gray-600" />
         </CardHeader>
         <CardContent>
           <div class="text-4xl font-bold mt-1">
-            {{ userStore.userCount }} <!-- Exibe a contagem de usuários -->
+            {{store.produtos.length}} 
           </div>
         </CardContent>
       </Card>
     </section>
+    <ProdutosRecentes class="mt-4" />
   </main>
 </template>
