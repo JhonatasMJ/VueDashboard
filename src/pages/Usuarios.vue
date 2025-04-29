@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 
-import PaginationComponent from '@/components/Pagination/index.vue'; // Atualize o caminho conforme necessário
+import PaginationComponent from '@/components/Pagination/index.vue'; 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import Sidebar from "@/components/Sidebar/index.vue";
@@ -10,7 +10,7 @@ import { dataHoraFormatada } from "@/functions/dataAgora";
 import SearchInput from "@/components/Busca/index.vue";
 import useUser from "@/hooks/useUser";
 
-// Função que já tem no seu projeto
+
 const { user, getUsers } = useUser();
 
 const searchQuery = ref("");
@@ -28,14 +28,14 @@ onMounted(async () => {
   }
 });
 
-// Computed para filtrar os usuários
+
 const filteredUsuarios = computed(() => {
   return usuarios.value.filter((usuario) =>
     usuario.nome.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
-// Computed para paginação
+
 const paginatedUsuarios = computed(() => {
   const startIndex = (currentPage.value - 1) * itemsPerPage;
   return filteredUsuarios.value.slice(startIndex, startIndex + itemsPerPage);

@@ -17,7 +17,7 @@ import { useRouter } from "vue-router";
 import { ref, reactive } from "vue";
 import { loginSchema } from "@/schemas/login";
 import Loading from "@/components/Loading/index.vue";
-import useUser from "@/hooks/useUser";
+import { useUserStore } from "@/stores/useUserStore";
 
 const router = useRouter();
 const isLoading = ref(false);
@@ -26,7 +26,6 @@ const showPassword = ref(false);
 const form = reactive({
   email: "",
   password: "",
-  rememberMe: false,
 });
 
 const errors = reactive({
@@ -34,14 +33,17 @@ const errors = reactive({
   password: null,
 });
 
-const { login } = useUser();
+const userStore = useUserStore();
 
 async function handleSubmit() {
   isLoading.value = true;
   errors.email = null;
   errors.password = null;
 
-  const result = loginSchema.safeParse(form);
+  const result = loginSchema.safeParse({
+    email: form.email,
+    password: form.password,
+  });
 
   if (!result.success) {
     result.error.errors.forEach((err) => {
@@ -54,12 +56,19 @@ async function handleSubmit() {
   }
 
   try {
-    const email = form.email.trim().toLowerCase(); // <- Limpa o email
+    const email = form.email.trim().toLowerCase();
     const password = form.password;
 
-    await login(email, password);
-    router.push({ path: "/Dashboard" });
+    await userStore.login(email, password);  // <-- Esperando o login ser completado
+
+    // Verifique se o usuário foi autenticado corretamente
+    if (userStore.user) {
+      router.push({ path: "/Dashboard" });
+    } else {
+      toast.error("Erro ao autenticar. Tente novamente.");
+    }
   } catch (error) {
+    // Tratamento de erro específico
     if (error.code === "auth/user-not-found") {
       toast.error("Usuário não encontrado.");
     } else if (error.code === "auth/wrong-password") {
@@ -77,31 +86,31 @@ async function handleSubmit() {
 
 <template>
   <Loading v-if="isLoading" />
-  <div v-else className="flex h-screen overflow-hidden">
+  <div v-else class="flex h-screen overflow-hidden">
     <Toaster position="top-right" />
-    <div className="w-full md:w-1/2 flex items-center justify-center p-8">
-      <Card className="w-full max-w-md bg-transparent border-none shadow-none">
-        <div className="flex mb-6 mr-12">
+    <div class="w-full md:w-1/2 flex items-center justify-center p-8">
+      <Card class="w-full max-w-md bg-transparent border-none shadow-none">
+        <div class="flex mb-6 mr-12">
           <img src="../../src/assets/logo.webp" alt="Logo" class="w-64" />
         </div>
-        <CardHeader className="px-0">
-          <CardTitle className="text-4xl text-(--marca) font-bold">
-            Olá novamenteee
+        <CardHeader class="px-0">
+          <CardTitle class="text-4xl text-(--marca) font-bold">
+            Olá novamente
           </CardTitle>
-          <CardDescription className="text-zinc-900 text-md mt-4">
+          <CardDescription class="text-zinc-900 text-md mt-4">
             Faça login para começar a usar seu Dashboard.
           </CardDescription>
         </CardHeader>
-        <div className="space-y-2 mt-4">
+        <div class="space-y-2 mt-4">
           <Label htmlFor="email"> Email </Label>
           <Input
             id="email"
             type="email"
             placeholder="Digite seu email"
             v-model="form.email"
-            :class="[
-              'py-5 focus-visible:ring-(--marca)/30 focus-visible:border-(--marca) ',
-              errors.email ? 'border border-red-500' : 'border border-gray-300',
+            :class="[ 
+              'py-5 focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)', 
+              errors.email ? 'border border-red-500' : 'border border-gray-300' 
             ]"
           />
           <p v-if="errors.email" class="text-red-500 text-sm">
@@ -109,8 +118,8 @@ async function handleSubmit() {
           </p>
         </div>
 
-        <CardContent className="px-0">
-          <div className="space-y-2 mt-6">
+        <CardContent class="px-0">
+          <div class="space-y-2 ">
             <Label htmlFor="password"> Senha </Label>
             <div class="relative">
               <Input
@@ -118,14 +127,11 @@ async function handleSubmit() {
                 id="password"
                 placeholder="Digite sua senha"
                 v-model="form.password"
-                :class="[
-                  'py-5 pr-12 focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)',
-                  errors.password
-                    ? 'border border-red-500'
-                    : 'border border-gray-300',
+                :class="[ 
+                  'py-5 pr-12 focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)', 
+                  errors.password ? 'border border-red-500' : 'border border-gray-300' 
                 ]"
               />
-
               <button
                 type="button"
                 class="absolute inset-y-0 right-3 flex items-center text-zinc-500 cursor-pointer"
@@ -139,12 +145,12 @@ async function handleSubmit() {
             </p>
           </div>
 
-          <div className="flex items-center justify-between mt-4 w-full">
-            <div className="flex items-center justify-between  ">
+          <div class="flex items-center justify-between mt-4 w-full">
+            <div class="flex items-center justify-between  ">
               <Checkbox id="remember-me" />
               <Label
                 htmlFor="remember-me"
-                className="text-sm font-normal cursor-pointer ml-2"
+                class="text-sm font-normal cursor-pointer ml-2"
               >
                 Lembrar-me
               </Label>
@@ -152,30 +158,30 @@ async function handleSubmit() {
           </div>
         </CardContent>
 
-        <CardFooter className="px-0">
+        <CardFooter class="px-0">
           <Button
-            class="bg-(--marca) w-full mt-6 cursor-pointer py-5 roudend-sm hover:bg-(--marca)/80"
+            class="bg-(--marca) w-full mt-6 cursor-pointer py-5 rounded-sm hover:bg-(--marca)/80"
             @click="handleSubmit"
             :disabled="isLoading"
           >
             {{ isLoading ? "Entrando..." : "Entrar" }}
           </Button>
-          <div class="flex justify-center gap-2 mt-2">
-            <p className="mt-2 text-sm text-(--marca)">
-              Não tem uma conta?
-              <RouterLink
-                to="/Registro"
-                className="font-medium text-(--marca) underline"
-              >
-                Criar conta
-              </RouterLink>
-            </p>
-          </div>
         </CardFooter>
+        <div class="flex justify-center gap-2 ">
+          <p class=" text-sm text-(--marca)">
+            Não tem uma conta?
+            <RouterLink
+              to="/Registro"
+              class="font-medium text-(--marca) underline"
+            >
+              Criar conta
+            </RouterLink>
+          </p>
+        </div>
       </Card>
     </div>
 
-    <div className="hidden md:block md:w-1/2 relative">
+    <div class="hidden md:block md:w-1/2 relative">
       <img
         src="../../src/assets/fundo.webp"
         alt="Logo"

@@ -26,9 +26,9 @@ const { user, logout } = useUser();
 </script>
 
 <template>
-  <div className="flex w-full flex-col bg-muted">
+  <div class="flex w-full flex-col bg-muted">
     <aside
-      className="fixed inset-y-0 z-10 hidden w-60 border-r bg-background sm:flex flex-col"
+      class="fixed inset-y-0 z-10 hidden w-60 border-r bg-background sm:flex flex-col"
     >
       <nav class="flex flex-col items-start gap-8 px-6 py-5">
         <TooltipProvider>
@@ -96,7 +96,7 @@ const { user, logout } = useUser();
         <template v-if="user">
           <div>
             <p class="capitalize font-bold text-center text-(--marca)">{{ user.displayName }}</p>
-            <p class="text-xs text-muted-foreground">{{ user.email }}</p>
+            <p class="text-xs text-center  text-muted-foreground">{{ user.email }}</p>
 
           </div>
           <Separator />
@@ -106,7 +106,7 @@ const { user, logout } = useUser();
             :onConfirm="logout"
           >
             <template #trigger>
-              <Button class="w-full" variant="destructive">Sair</Button>
+              <Button class="w-full cursor-pointer" variant="destructive">Sair</Button>
             </template>
           </ConfirmDialog>
         </template>

@@ -12,9 +12,9 @@
   
         <div class="flex justify-end gap-2 mt-4">
           <DialogClose as-child>
-            <Button variant="outline">Cancelar</Button>
+            <Button variant="outline" class="cursor-pointer">Cancelar</Button>
           </DialogClose>
-          <Button variant="destructive" @click="handleConfirm">
+          <Button class="cursor-pointer" variant="destructive" @click="handleConfirm">
             Confirmar
           </Button>
         </div>

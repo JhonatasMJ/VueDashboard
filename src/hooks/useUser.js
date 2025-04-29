@@ -10,6 +10,7 @@ import {
 import { ref as dbRef, set, update, get } from "firebase/database";
 import router from "@/router";
 
+
 const currentUser = ref(null);
 
 onAuthStateChanged(auth, (user) => {
