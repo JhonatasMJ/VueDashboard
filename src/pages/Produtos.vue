@@ -37,22 +37,21 @@ import Sidebar from "@/components/Sidebar/index.vue";
 import SearchInput from "@/components/Busca/index.vue";
 import { dataHoraFormatada } from "@/functions/dataAgora";
 import ConfirmDialog from "@/components/DialogConfirm/index.vue";
-
-
+import { maskCurrency, unmaskCurrency } from "@/functions/mascaraReal";
 import { produtoSchema } from "@/schemas/produtos";
 
 const store = useProdutosStore();
 
+const preco = ref(0);
+const precoFormatado = ref("R$ 0,00");
 const isDialogOpen = ref(false);
 const produto = ref("");
 const desc = ref("");
-const preco = ref(0);
 const qtd = ref(0);
 const imagemUrl = ref("");
 const searchQuery = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 6;
-
 
 const errors = reactive({
   produto: null,
@@ -64,6 +63,26 @@ const errors = reactive({
 
 const carregarProdutos = async () => {
   await store.carregarProdutos();
+};
+
+const handleInputPreco = (e) => {
+  let onlyDigits = e.target.value.replace(/\D/g, "");
+
+  if (!onlyDigits) {
+    preco.value = 0;
+    precoFormatado.value = "R$ 0,00";
+    return;
+  }
+
+
+  preco.value = parseFloat(onlyDigits) / 100;
+  precoFormatado.value = maskCurrency(onlyDigits);
+};
+
+
+
+const formatarPrecoNaSaida = () => {
+  precoFormatado.value = maskCurrency((preco.value * 100).toString());
 };
 
 const cadastrarProduto = async () => {
@@ -99,7 +118,7 @@ const cadastrarProduto = async () => {
     );
     limparFormulario();
     toast.success("Produto cadastrado com sucesso!");
-    isDialogOpen.value = false; 
+    isDialogOpen.value = false;
   } catch (error) {
     console.error("Erro ao cadastrar produto:", error);
     toast.error("Erro ao cadastrar produto.");
@@ -110,17 +129,20 @@ const limparFormulario = () => {
   produto.value = "";
   desc.value = "";
   preco.value = 0;
+  precoFormatado.value = "R$ 0,00";
   qtd.value = 0;
   imagemUrl.value = "";
 };
 
 onMounted(() => {
   carregarProdutos();
+  precoFormatado.value = maskCurrency(preco.value.toString());
 });
 
 const filtredProdutos = computed(() => {
+  const query = searchQuery.value.toLowerCase();
   return store.produtos.filter((p) =>
-    p.produto.toLowerCase().includes(searchQuery.value.toLowerCase())
+    p?.produto?.toLowerCase().includes(query)
   );
 });
 
@@ -134,12 +156,11 @@ const excluirProduto = (codigo) => {
 };
 </script>
 
-
 <template>
   <Sidebar />
   <main class="sm:ml-64 p-4 px-12">
     <Card class="w-full shadow-md rounded-lg bg-white">
-      <Dialog  v-model:open="isDialogOpen">
+      <Dialog v-model:open="isDialogOpen">
         <CardHeader class="flex justify-between">
           <div class="flex flex-col">
             <CardTitle class="flex text-lg sm:text-xl text-gray-800">
@@ -170,50 +191,87 @@ const excluirProduto = (codigo) => {
               <Input
                 id="produto"
                 v-model="produto"
-                :class="[errors.produto ? 'border border-red-500' : ' focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)']"
+                :class="[
+                  errors.produto
+                    ? 'border border-red-500'
+                    : ' focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)',
+                ]"
               />
-              <p v-if="errors.produto" class="text-red-500 text-sm">{{ errors.produto }}</p>
+              <p v-if="errors.produto" class="text-red-500 text-sm">
+                {{ errors.produto }}
+              </p>
             </div>
             <div class="space-y-2">
               <Label for="desc">Descrição</Label>
               <Input
                 id="desc"
                 v-model="desc"
-                :class="[errors.desc ? 'border border-red-500' : ' focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)']"
+                :class="[
+                  errors.desc
+                    ? 'border border-red-500'
+                    : ' focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)',
+                ]"
               />
-              <p v-if="errors.desc" class="text-red-500 text-sm">{{ errors.desc }}</p>
+              <p v-if="errors.desc" class="text-red-500 text-sm">
+                {{ errors.desc }}
+              </p>
             </div>
             <div class="space-y-2">
               <Label for="preco">Preço</Label>
               <Input
                 id="preco"
-                type="number"
-                v-model="preco"
-                :class="[errors.preco ? 'border border-red-500' : ' focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)']"
+                v-model="precoFormatado"
+                @input="handleInputPreco"
+                @blur="formatarPrecoNaSaida"
+                :class="[
+                  errors.preco
+                    ? 'border border-red-500'
+                    : 'focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)',
+                  'transition-all ease-in-out',
+                ]"
               />
-              <p v-if="errors.preco" class="text-red-500 text-sm">{{ errors.preco }}</p>
+              <p v-if="errors.preco" class="text-red-500 text-sm">
+                {{ errors.preco }}
+              </p>
             </div>
+
             <div class="space-y-2">
               <Label for="qtd">Quantidade</Label>
               <Input
                 id="qtd"
                 type="number"
                 v-model="qtd"
-                :class="[errors.qtd ? 'border border-red-500' : ' focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)']"
+                :class="[
+                  errors.qtd
+                    ? 'border border-red-500'
+                    : ' focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)',
+                ]"
               />
-              <p v-if="errors.qtd" class="text-red-500 text-sm">{{ errors.qtd }}</p>
+              <p v-if="errors.qtd" class="text-red-500 text-sm">
+                {{ errors.qtd }}
+              </p>
             </div>
             <div class="space-y-2">
               <Label for="imagemUrl">URL da Imagem</Label>
               <Input
                 id="imagemUrl"
                 v-model="imagemUrl"
-                :class="[errors.imagemUrl ? 'border border-red-500' : ' focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)']"
+                :class="[
+                  errors.imagemUrl
+                    ? 'border border-red-500'
+                    : ' focus-visible:ring-(--marca)/30 focus-visible:border-(--marca)',
+                ]"
               />
-              <p v-if="errors.imagemUrl" class="text-red-500 text-sm">{{ errors.imagemUrl }}</p>
+              <p v-if="errors.imagemUrl" class="text-red-500 text-sm">
+                {{ errors.imagemUrl }}
+              </p>
             </div>
             <DialogFooter>
-              <Button class="w-full bg-(--marca) hover:bg-(--marca)/80" type="submit">Cadastrar</Button>
+              <Button
+                class="w-full bg-(--marca) hover:bg-(--marca)/80"
+                type="submit"
+                >Cadastrar</Button
+              >
             </DialogFooter>
           </form>
         </DialogContent>
@@ -251,7 +309,9 @@ const excluirProduto = (codigo) => {
               :key="p.codigo"
               class="border-b border-gray-200 hover:bg-gray-100"
             >
-              <TableCell class="text-gray-900 capitalize">{{ p.codigo }}</TableCell>
+              <TableCell class="text-gray-900 capitalize">{{
+                p.codigo
+              }}</TableCell>
               <TableCell class="text-left">
                 <Avatar class="w-14 h-14 rounded-sm">
                   <AvatarImage :src="p.imagemUrl" :alt="p.produto" />
@@ -261,12 +321,29 @@ const excluirProduto = (codigo) => {
               <TableCell class="text-left capitalize text-gray-600">
                 <div class="flex flex-col">
                   {{ p.produto }}
-                  <small>{{ p.desc || 'Sem Descrição' }}</small>
+                  <small>{{ p.desc || "Sem Descrição" }}</small>
                 </div>
               </TableCell>
-              <TableCell class="text-left text-gray-500">R${{ p.preco }}</TableCell>
-              <TableCell class="text-left text-(--marca) font-bold">{{ p.qtd }}</TableCell>
-              <TableCell class="text-left text-gray-500">R${{ p.preco * p.qtd }}</TableCell>
+              <TableCell class="text-left text-gray-500">
+                {{
+                  Number(p.preco).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })
+                }}
+              </TableCell>
+              <TableCell class="text-left text-(--marca) font-bold">{{
+                p.qtd
+              }}</TableCell>
+              <TableCell class="text-left text-(--marca) font-bold">
+                {{
+                  (p.preco * p.qtd).toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })
+                }}
+              </TableCell>
+
               <TableCell class="text-left text-gray-500">
                 <div class="flex gap-2 justify-center p-4">
                   <Button size="sm" variant="outline">
@@ -291,13 +368,14 @@ const excluirProduto = (codigo) => {
             </TableRow>
           </TableBody>
         </Table>
-        <PaginationComponent
-          :total-items="filtredProdutos.length"
-          :items-per-page="itemsPerPage"
-          v-model="currentPage"
-        />
+        <template v-if="paginatedProdutos.length > 0">
+          <PaginationComponent
+            :total-items="filtredProdutos.length"
+            :items-per-page="itemsPerPage"
+            v-model="currentPage"
+          />
+        </template>
       </CardContent>
     </Card>
   </main>
 </template>
-
