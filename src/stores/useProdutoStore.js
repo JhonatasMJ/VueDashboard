@@ -41,7 +41,7 @@ export const useProdutosStore = defineStore("produtos", {
         preco,
         qtd,
         imagemUrl,
-        createdAt: new Date().toISOString(), 
+        createdAt: new Date().toISOString(),
       };
 
       await set(produtoRef, novoProduto);
@@ -65,6 +65,28 @@ export const useProdutosStore = defineStore("produtos", {
       this.removeProduto(codigo);
     },
 
+
+    async updateProduto(codigo, produto, desc, preco, qtd, imagemUrl) {
+      if (!produto || preco === undefined || qtd === undefined || !imagemUrl) {
+        throw new Error("Todos os campos devem estar preenchidos.");
+      }
+
+      const produtoRef = dbRef(database, `produtos/${codigo}`);
+
+      const updatedProduto = {
+        codigo,
+        produto,
+        desc,
+        preco,
+        qtd,
+        imagemUrl,
+        updatedAt: new Date().toISOString(), 
+      };
+
+      await set(produtoRef, updatedProduto);
+      this.updateProdutoInState(updatedProduto);
+    },
+
     setProdutos(produtos) {
       this.produtos = produtos;
     },
@@ -75,6 +97,13 @@ export const useProdutosStore = defineStore("produtos", {
 
     removeProduto(codigo) {
       this.produtos = this.produtos.filter((p) => p.codigo !== codigo);
+    },
+
+    updateProdutoInState(updatedProduto) {
+      const index = this.produtos.findIndex((p) => p.codigo === updatedProduto.codigo);
+      if (index !== -1) {
+        this.produtos[index] = updatedProduto; 
+      }
     },
 
     getAllProdutos() {
